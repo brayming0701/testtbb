@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WindVane JSAPI POC</title>
+</head>
+<body>
+    <h1>WindVane JSAPI POC</h1>
+    <button onclick="testJSAPI()">测试JSAPI调用</button>
+    <button onclick="getNetworkType()">获取网络类型</button>
+    <button onclick="checkPermissions()">检查权限</button>
+    <button onclick="copyToClipboard()">复制到剪贴板</button>
+    <button onclick="openBrowser()">打开浏览器</button>
+    <button onclick="isInstall()">检查应用安装</button>
+    <div id="result"></div>
+
+    <script>
+        function logResult(result) {
+            document.getElementById('result').innerHTML += '<br>' + result;
+        }
+
+        function testJSAPI() {
+            if (window.WindVane) {
+                logResult('WindVane框架可用');
+
+                // 测试调用WindVane API
+                try {
+                    // 调用isWindVaneSDK API
+                    window.WindVane.call('WVBase.isWindVaneSDK', {}, function(result) {
+                        logResult('WindVane SDK信息: ' + JSON.stringify(result));
+                    }, function(error) {
+                        logResult('调用失败: ' + JSON.stringify(error));
+                    });
+                } catch(e) {
+                    logResult('调用异常: ' + e.message);
+                }
+            } else {
+                logResult('WindVane框架不可用');
+            }
+        }
+
+        function getNetworkType() {
+            if (window.WindVane) {
+                try {
+                    window.WindVane.call('WVNetwork.getNetworkType', {}, function(result) {
+                        logResult('网络类型: ' + JSON.stringify(result));
+                    }, function(error) {
+                        logResult('获取网络类型失败: ' + JSON.stringify(error));
+                    });
+                } catch(e) {
+                    logResult('获取网络类型异常: ' + e.message);
+                }
+            }
+        }
+
+        function checkPermissions() {
+            if (window.WindVane) {
+                try {
+                    var params = {
+                        "permissions": [
+                            "android.permission.CAMERA",
+                            "android.permission.WRITE_EXTERNAL_STORAGE",
+                            "android.permission.READ_EXTERNAL_STORAGE"
+                        ]
+                    };
+                    window.WindVane.call('WVBase.checkPermissions', params, function(result) {
+                        logResult('权限检查结果: ' + JSON.stringify(result));
+                    }, function(error) {
+                        logResult('权限检查失败: ' + JSON.stringify(error));
+                    });
+                } catch(e) {
+                    logResult('权限检查异常: ' + e.message);
+                }
+            }
+        }
+
+        function copyToClipboard() {
+            if (window.WindVane) {
+                try {
+                    var params = {
+                        "text": "这是从WindVane复制的文本"
+                    };
+                    window.WindVane.call('WVBase.copyToClipboard', params, function(result) {
+                        logResult('复制成功: ' + JSON.stringify(result));
+                    }, function(error) {
+                        logResult('复制失败: ' + JSON.stringify(error));
+                    });
+                } catch(e) {
+                    logResult('复制异常: ' + e.message);
+                }
+            }
+        }
+
+        function openBrowser() {
+            if (window.WindVane) {
+                try {
+                    var params = {
+                        "url": "https://www.baidu.com"
+                    };
+                    window.WindVane.call('WVBase.openBrowser', params, function(result) {
+                        logResult('浏览器打开成功: ' + JSON.stringify(result));
+                    }, function(error) {
+                        logResult('浏览器打开失败: ' + JSON.stringify(error));
+                    });
+                } catch(e) {
+                    logResult('浏览器打开异常: ' + e.message);
+                }
+            }
+        }
+
+        function isInstall() {
+            if (window.WindVane) {
+                try {
+                    var params = {
+                        "android": "com.android.settings"
+                    };
+                    window.WindVane.call('WVBase.isInstall', params, function(result) {
+                        logResult('应用安装检查: ' + JSON.stringify(result));
+                    }, function(error) {
+                        logResult('应用安装检查失败: ' + JSON.stringify(error));
+                    });
+                } catch(e) {
+                    logResult('应用安装检查异常: ' + e.message);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
